@@ -1,4 +1,4 @@
-% watchdoggie.erl -- (c) Robert Boyd 2010
+% watcher.erl -- (c) Robert Boyd 2010
 %
 %		Watches a directory for modifications of src/*.erl source files.  Kicks off a build after updates.
 
@@ -52,9 +52,23 @@ loop(State, Largest) ->
 			nop
 	end,
 	loop(State#watcher_rec{tree = Tree}, erlang:max(Largest, Latest)).
+
 	
+%% string_format/2
+%% Like io:format except it returns the evaluated string rather than write
+%% it to standard output.
+%% Parameters:
+%%   1. format string similar to that used by io:format.
+%%   2. list of values to supply to format string.
+%% Returns:
+%%   Formatted string.
+string_format(Pattern, Values) ->
+    lists:flatten(io_lib:format(Pattern, Values)).
+
 make() ->
 	io:format("Building...~n"),
 	{Time, Value} = timer:tc(os, cmd, ["make"]),
 	io:format(Value),
-	io:format("Finished in ~p sec~n~n", [Time/1000000]).
+	Seconds = Time/1000000,
+	io:format("Finished in ~p sec~n~n", [Seconds]),
+	growl_notifier:notify("Build Results", "Results", Value ++ string_format("Finished in ~p seconds.~n", [Seconds])). 
