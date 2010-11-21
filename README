@@ -1,3 +1,5 @@
 
 Watchdoggie watches a directory for changes and automatically kicks off a build
 if any are detected.
+
+This release is configured to use Growl (OS X) as a notifier.
