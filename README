@@ -1,0 +1,3 @@
+
+Watchdoggie watches a directory for changes and automatically kicks off a build
+if any are detected.
